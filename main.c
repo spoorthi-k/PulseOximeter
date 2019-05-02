@@ -21,6 +21,8 @@ int calculate_SpO2(IR, Red) {
 
 // displays measured blood oxygen saturation value onto the screen
 void display_to_screen(int) {
+	P2OUT |= BIT2;
+	P1OUT = int
 	// 7-segment display output
 }
 
@@ -29,9 +31,10 @@ void main(void) {
 
     // INITIALIZE PINS
     /* Pin use:
+     * P4.0 - IR LED output
+     * P4.3 - Red LED output
+     * P2.(2-4) - 3-digit selector for SpO2
      * P1.(2-5) - 4 bit output for display
-     * P2.2 - IR LED output
-     * P2.3 - Red LED output
      * P6.0 - photodiode input
      * P6.1 - potentiometer input
      * */
@@ -41,12 +44,12 @@ void main(void) {
 
 	while (1) {
 		if (potentiometer_engaged()) {
-			P2OUT |= BIT2; // IR LED on
+			P4OUT |= BIT0; // IR LED on
 			int IR_absorbance = P6IN & BIT0; // Collects IR absorbance value
-			P2OUT &= ~BIT2; // IR LED off
-			P2OUT |= BIT3; // Red LED on
+			P4OUT &= ~BIT0; // IR LED off
+			P4OUT |= BIT3; // Red LED on
 			int Red_absorbance = P6IN & BIT0; // Collects Red light absorbance value
-			P2OUT &= ~BIT3; // Red LED off
+			P4OUT &= ~BIT3; // Red LED off
 			int saturation = calculate_SpO2(IR_absorbance, Red_absorbance);
 			display_to_screen(saturation);
 			__delay_cycles(100000); // need to test clock speed for exact delay, currently an arbitrary number
